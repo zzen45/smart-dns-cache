@@ -1,6 +1,6 @@
-# 🧠⚡ Smart DNS Cache (full‑stack microservice)
+# Reactive In-House DNS Cache API
 [![Backend CI](https://github.com/zzen45/smart-dns-cache/actions/workflows/backend.yml/badge.svg)](https://github.com/zzen45/smart-dns-cache/actions)
-
+## Full-Stack Demo
 ---
 
 Spin up a reactive Spring Boot + Redis DNS‑cache microservice **and** a lightweight Angular dashboard with **one command** – no local Java/Node tooling required.
@@ -10,7 +10,7 @@ Spin up a reactive Spring Boot + Redis DNS‑cache microservice **and** a lightw
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone https://github.com/zzen45/smart-dns-cache.git
@@ -28,7 +28,7 @@ docker compose up --build
 
 ---
 
-## 🖥️ Dashboard (Optional UI)
+## Dashboard (Optional UI)
 
 Visit `http://localhost/` to:
 
@@ -38,7 +38,7 @@ Visit `http://localhost/` to:
 
 ---
 
-## 🔍 API Cheatsheet
+## APIs Provided
 
 ```
 GET    /api/dns/cache              # list all cached records
@@ -59,7 +59,7 @@ curl -X POST http://localhost:8080/api/dns/cache \
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ```
 smart-dns-cache/
@@ -79,7 +79,7 @@ smart-dns-cache/
 
 ---
 
-## 🛠️ Development Setup (Without Docker)
+## Development Setup (Without Docker)
 
 Backend (Spring Boot):
 ```bash
@@ -99,7 +99,7 @@ ng serve
 
 ---
 
-## ✅ Git & CI Setup
+## Git & CI Setup
 
 - Monorepo tracks both backend and frontend
 - `.gitignore` excludes build artifacts, IDE junk, and `node_modules`
@@ -114,7 +114,3 @@ ng serve
 docker compose down -v
 docker image prune -f   # optional
 ```
-
----
-
-Happy caching! 🎉
