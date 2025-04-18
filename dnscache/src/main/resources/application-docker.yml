@@ -1,0 +1,3 @@
+spring:
+  data.redis.host: ${SPRING_REDIS_HOST:redis}
+management.endpoints.web.exposure.include: health,info

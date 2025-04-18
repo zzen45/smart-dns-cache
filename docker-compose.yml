@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./dns-cache-ui
+    ports:
+      - "4200:80"
+    depends_on:
+      - dnscache
+
+  dnscache:
+    build: ./dnscache
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
