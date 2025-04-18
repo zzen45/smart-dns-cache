@@ -1,98 +1,75 @@
-# 🔧 Smart DNS Cache — Full‑Stack Demo
+# 🧠⚡ Smart DNS Cache (full‑stack demo)
 
-A **reactive DNS caching micro‑service** with a minimal Angular dashboard.
+Spin up a reactive Spring Boot + Redis DNS‑cache API **and** a lightweight Angular
+dashboard with **one command** – no local Java/Node tooling required.
 
-* **Backend**: Spring Boot (WebFlux) + Redis  
-* **Frontend**: Angular 17 served by Nginx  
-* **Packaging**: Docker & Docker Compose
-
----
-
-## 📦 Features
-
-| Area      | What you get |
-|-----------|--------------|
-| **API**   | Resolve domains, cache with TTL, manual overrides, delete / clear cache |
-| **Health**| `/actuator/health` with Redis, disk, SSL checks |
-| **UI**    | View cache, add / delete / purge records, live stats |
-| **DevOps**| One‑command spin‑up via `docker‑compose up --build` |
-
----
-
-## 🚀 Quick Start
+## 🚀 Quick start
 
 ```bash
-git clone https://github.com/<your‑github>/smart-dns-cache.git
+# 1 — clone the repo
+git clone https://github.com/<you>/smart-dns-cache.git
 cd smart-dns-cache
-docker-compose up --build
 
-Service	URL
-Frontend	http://localhost:4200
-Backend	http://localhost:8080
-Redis	localhost:6379 (internal)
-Stop everything:
+# 2 — build & run everything
+docker compose up --build
 
-docker-compose down -v            
-🧪 Test the REST API (with Postman / curl)
+Component	Exposed URL (after start‑up)
+Front‑end (Angular + Nginx)	http://localhost/
+REST API (Spring Boot)	http://localhost:8080/api/dns
+Redis (transparent)	localhost:6379
+Hit Ctrl‑C to stop, or docker compose down -v to stop and remove volumes.
 
-# 1. View cached records
-GET http://localhost:8080/api/dns/cache
+🖥️ Dashboard (optional)
 
-# 2. Add a manual record
-POST http://localhost:8080/api/dns/cache
-Content-Type: application/json
-{
-  "domain": "example.local",
-  "ip": "192.168.1.100",
-  "ttl": 300
-}
+Open http://localhost/ to:
 
-# 3. Delete a record
-DELETE http://localhost:8080/api/dns/cache/example.local
+View live cache statistics
+Add a manual DNS record
+Delete individual entries
+Flush the entire cache
+Everything you do in the UI immediately calls the same API shown below.
 
-# 4. Clear the entire cache
-DELETE http://localhost:8080/api/dns/cache
-Health check (verifies Redis connection):
+🔍 API quick reference
 
-curl http://localhost:8080/actuator/health
-🖥️ Frontend Dashboard
+GET  /api/dns/cache              # list all cached records
+POST /api/dns/cache              # add manual record
+DELETE /api/dns/cache/{domain}   # delete one record
+DELETE /api/dns/cache            # clear all
+GET  /actuator/health            # system health
+Example (cURL / Postman)
+# list cache
+curl http://localhost:8080/api/dns/cache | jq
 
-Open http://localhost:4200 to:
-
-🔄 Refresh & view current DNS cache
-➕ Add manual records (domain / IP / TTL)
-❌ Delete individual records
-🧹 Clear the cache
-✅ See system health badge
-The UI is intentionally lightweight; feel free to extend it.
-🗂️ Project Structure
+# add a manual entry
+curl -X POST http://localhost:8080/api/dns/cache \
+     -H "Content-Type: application/json" \
+     -d '{"domain":"example.com","ip":"93.184.216.34","ttl":300}'
+⚙️ Project structure
 
 smart-dns-cache/
-│
-├── docker-compose.yml
-│
-├── dns-cache-ui/          # Angular app
-│   ├── Dockerfile
-│   └── nginx.conf
-│
-└── dnscache/              # Spring Boot WebFlux service
-    ├── Dockerfile
-    └── src/main/java/...
-🧑‍💻 Developer Workflow
+├─ docker-compose.yml   # Build file
+├─ dns-cache-ui/        # Angular dashboard  (built → Nginx)
+└─ dnscache/            # Spring Boot API + Redis client
+How the pieces talk
+┌────────┐  HTTP (Docker network)  ┌─────────────┐  TCP  ┌────────┐
+│ Angular│ ───────────────────────►│ Spring Boot │──────►│ Redis  │
+│  UI    │  localhost (80)         │  API :8080  │ :6379 │ Cache  │
+└────────┘                         └─────────────┘       └────────┘
+🛠️ Customisation
 
-Re‑build frontend only
-cd dns-cache-ui
-npm install               # first time
-npm run build --prod
-docker-compose up --build frontend
-Re‑build backend only
-cd dnscache
-mvn clean package -DskipTests
-docker-compose up --build dnscache
-⚙️ Configuration Tweaks
+Change ports – edit the ports: lines inside docker-compose.yml.
+Example: put the UI on 8081 instead of 80:
+frontend:
+  ports:
+    - "8081:80"
+Skip the UI – comment‑out or delete the frontend: service.
+Change default TTL / fallback DNS servers – see dnscache/src/main/resources/application.yml.
+🧹 Cleanup
 
+docker compose down -v   # stop + remove volumes
+docker image prune -f    # remove dangling images (optional)
+✨ What you get
 
-Place	What to change
-dnscache/src/main/resources/application.yml	Redis host/port, fallback resolvers, TTL
-dns-cache-ui/src/environments/*	apiUrl if you expose backend elsewhere
-docker-compose.yml	Port mapping, image tags, volumes
+Immediate demo of a micro‑service talking to Redis and a separate UI – all containerised
+No local Java, Node, or Redis installation headaches
+A template for your own full‑stack “API + dashboard” projects
