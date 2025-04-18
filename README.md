@@ -5,8 +5,8 @@
 
 Spin up a reactive Spring Boot + Redis DNS‑cache microservice **and** a lightweight Angular dashboard with **one command** – no local Java/Node tooling required.
 
-> 🧩 The frontend is an optional add-on, mainly for demo and fun UI purposes.  
-> ✅ We recommend using Postman or `curl` to mimic real user/API requests.
+> The frontend is an optional add-on, mainly for demo and fun UI purposes.  
+> Recommend using Postman or `curl` to mimic real user/API requests.
 
 ---
 
