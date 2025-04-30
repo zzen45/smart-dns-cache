@@ -1,16 +1,13 @@
-name: Backend CI
+name: Build & Push Backend Docker Image
 
 on:
   push:
     paths:
       - 'dnscache/**'
       - '.github/workflows/**'
-  pull_request:
-    paths:
-      - 'dnscache/**'
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +20,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
+      - name: Build backend with Maven
         working-directory: dnscache
         run: mvn clean package -DskipTests
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t zzeng45/dnscache-backend:latest ./dnscache
+
+      - name: Push Docker image
+        run: docker push zzeng45/dnscache-backend:latest

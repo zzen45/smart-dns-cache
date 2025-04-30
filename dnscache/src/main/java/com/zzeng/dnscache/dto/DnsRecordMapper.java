@@ -5,11 +5,19 @@ import com.zzeng.dnscache.model.DnsRecord;
 public class DnsRecordMapper {
 
     public static DnsRecordResponse toResponse(DnsRecord record) {
-        return new DnsRecordResponse(
+        DnsRecordResponse response = new DnsRecordResponse(
                 record.getDomain(),
                 record.getIp(),
                 record.getTtl()
         );
+
+        if (record.isManual()) {
+            response.setResolvedBy("manual");
+        } else {
+            response.setResolvedBy("cache");
+        }
+
+        return response;
     }
 
     public static DnsRecord toManualDnsRecord(DnsRecordCreateRequest request) {

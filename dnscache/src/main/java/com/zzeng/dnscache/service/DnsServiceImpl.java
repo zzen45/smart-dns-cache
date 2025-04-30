@@ -65,9 +65,18 @@ public class DnsServiceImpl implements DnsService {
     public Mono<DnsRecordResponse> resolveDomain(String domain, long ttlSeconds) {
         return dnsCacheRepository.get(domain)
                 .flatMap(json -> JsonUtil.safeDeserialize(json, objectMapper))
-                .switchIfEmpty(Mono.defer(() -> resolveAndCache(domain, ttlSeconds)))
-                .map(DnsRecordMapper::toResponse);
+                .map(DnsRecordMapper::toResponse)
+                .switchIfEmpty(
+                        Mono.defer(() -> resolveAndCache(domain, ttlSeconds)
+                                .map(record -> {
+                                    DnsRecordResponse response = DnsRecordMapper.toResponse(record);
+                                    response.setResolvedBy("fallback");
+                                    return response;
+                                })
+                        )
+                );
     }
+
 
     private Mono<DnsRecord> resolveAndCache(String domain, long ttlSeconds) {
         return resolveWithFallback(domain)

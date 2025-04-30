@@ -7,6 +7,7 @@ public class DnsRecordResponse {
     private String domain;
     private String ip;
     private long ttl;
+    private String resolvedBy;
 
     public DnsRecordResponse() {}
 
@@ -38,6 +39,14 @@ public class DnsRecordResponse {
 
     public void setTtl(long ttl) {
         this.ttl = ttl;
+    }
+
+    public String getResolvedBy() {
+        return resolvedBy;
+    }
+
+    public void setResolvedBy(String resolvedBy) {
+        this.resolvedBy = resolvedBy;
     }
 
     @Override
