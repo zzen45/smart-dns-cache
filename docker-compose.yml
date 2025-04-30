@@ -9,7 +9,7 @@ services:
       - dnscache
 
   dnscache:
-    build: ./dnscache
+    build: zzeng45/dnscache-backend:latest
     ports:
       - "8080:8080"
     depends_on:
